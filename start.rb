@@ -25,7 +25,7 @@ class UserInput
 
 	def choice_loop
 		until @choice == "exit"
-			puts "What do you want to do? Use 'check', 'tweet' or 'exit'."
+			puts "What do you want to do? Use 'check', 'tweet', 'help' or 'exit'."
 			print "> "
 			@choice = STDIN.gets.chomp
 			@choice.downcase!
