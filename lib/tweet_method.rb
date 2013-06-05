@@ -7,6 +7,7 @@ $:.unshift File.expand_path(File.dirname(__FILE__))
 require 'keys'
 require 'http'
 require 'choices'
+require 'exceptions'
 
 module TweetMethod
 
@@ -14,6 +15,7 @@ module TweetMethod
 	include Http
 	include JSON
 	include Choices
+	include Exceptions
 
 	def tweet_method(consumer_key, access_token, choice)
 
@@ -26,6 +28,7 @@ module TweetMethod
 			check
 			return choice
 		when "exit"
+			print "Quitting"
 			sec = Time.now.sec
 			i = sec + 3
 			until sec == i
@@ -35,7 +38,7 @@ module TweetMethod
 				end
 				sec += 1
 			end
-			abort("Quitting...")
+			abort("Done")
 		when "help"
 			puts "Type 'Tweet' or 'tweet' to compose a tweet."
 			puts "Type 'Check' or 'check' to check your mentions."

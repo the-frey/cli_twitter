@@ -30,7 +30,7 @@ class UserInput
 			@choice = STDIN.gets.chomp
 			@choice.downcase!
 			tweet_method(consumer_key, access_token, @choice) 
-			puts "\n\n---------"
+			puts "\n\n___________________\n\n"
 		end
 	end
 end

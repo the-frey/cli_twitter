@@ -3,11 +3,10 @@ module Choices
 		puts "What do you want to tweet?"
 		print "> "
 		tweet_text = STDIN.gets.chomp
-		#tweet_text.to_s
 
 		if tweet_text.length > 140
+			puts "The tweet is too long (#{tweet_text.length})."
 			tweet_invalid = true
-			abort("The tweet is too long (#{tweet_text.length}).")
 		end
 
 		path = "/1.1/statuses/update.json"
@@ -16,7 +15,7 @@ module Choices
 		
 		address = address_path
 
-		request = Net::HTTP::Post.new address.request_uri
+		request = request_generator(address, "POST")
 		request.set_form_data(
 			"status" => "#{tweet_text}"
 			)
@@ -31,12 +30,14 @@ module Choices
 
 		#Parse and print the tweet if the response code was 200
 		tweet = nil
-		if response.code == '200'
-			tweet = JSON.parse(response.body)
-			puts "Successfully posted Tweet: #{tweet["text"]}"
-		else
-			puts "Could not send the Tweet! " + "Code: #{response.code} \nBody: #{response.body}"
-		end 
+		if response
+			if response.code == '200'
+				tweet = JSON.parse(response.body)
+				puts "Successfully posted Tweet: #{tweet["text"]}"
+			else
+				puts "Could not send the Tweet! " + "Code: #{response.code} \nBody: #{response.body}"
+			end 
+		end
 	end
 
 	def check
@@ -57,7 +58,7 @@ module Choices
 			tweets.each do |t|
 				output = ""
 				output << "#{t["user"]["name"]} "
-				output << "(#{t["user"]["screen_name"]}) "  
+				output << "(#{t["user"]["screen_name"]}) \n"  
 				output << "#{t["created_at"]}: \n" 
 				output << "#{t["text"]}\n\n"
 				output << "--- \n\n"
@@ -69,7 +70,7 @@ module Choices
 		#puts http.set_debug_output($stderr)
 
 		# Build the request and authorize it with OAuth.
-		request = Net::HTTP::Get.new address.request_uri
+		request = request_generator(address,"GET")
 		request.oauth! http, consumer_key, access_token
 
 		# Issue the request and return the response.
